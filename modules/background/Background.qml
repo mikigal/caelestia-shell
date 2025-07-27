@@ -26,7 +26,9 @@ LazyLoader {
             anchors.left: true
             anchors.right: true
 
-            Wallpaper {}
+            Wallpaper {
+                visible: modelData.name !== "DP-3"
+            }
 
             Loader {
                 anchors.right: parent.right

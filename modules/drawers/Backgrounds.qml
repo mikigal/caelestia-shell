@@ -29,12 +29,13 @@ Shape {
         startY: (root.height - wrapper.height) / 2 - rounding
     }
 
-    Notifications.Background {
-        wrapper: panels.notifications
+    // Notification background from border
+    //Notifications.Background {
+    //    wrapper: panels.notifications
 
-        startX: root.width
-        startY: 0
-    }
+    //    startX: root.width
+    //    startY: 0
+    //}
 
     Session.Background {
         wrapper: panels.session

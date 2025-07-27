@@ -14,6 +14,7 @@ Item {
     required property PersistentProperties visibilities
     required property BarPopouts.Wrapper popouts
 
+    visible: screen.name !== "DP-3"
     function checkPopout(y: real): void {
         const spacing = Appearance.spacing.small;
         const aw = activeWindow.child;

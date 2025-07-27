@@ -44,6 +44,7 @@ Item {
     Notifications.Wrapper {
         id: notifications
 
+        visible: screen.name === "DP-3"
         visibilities: root.visibilities
         panel: root
 
