@@ -86,7 +86,6 @@ Variants {
             }
 
             Item {
-                visible: scope.modelData.name !== "DP-3"
                 anchors.fill: parent
                 layer.enabled: true
                 layer.effect: MultiEffect {
@@ -96,6 +95,7 @@ Variants {
                 }
 
                 Border {
+                    visible: scope.modelData.name !== "DP-3"
                     bar: bar
                 }
 
