@@ -60,19 +60,27 @@ Item {
         }
     ]
 
-    Loader {
-        id: content
-
-        Component.onCompleted: active = Qt.binding(() => Config.bar.persistent || root.visibilities.bar || root.isHovered || root.visible)
-
-        anchors.top: parent.top
-        anchors.bottom: parent.bottom
-        anchors.right: parent.right
-
-        sourceComponent: Bar {
+    Component {
+        id: barComponent
+        Bar {
             screen: root.screen
             visibilities: root.visibilities
             popouts: root.popouts
         }
+    }
+
+    Loader {
+        id: content
+
+        Component.onCompleted: {
+            if (root.screen && root.screen.name !== "DP-3") {
+                active = Qt.binding(() => Config.bar.persistent || root.visibilities.bar || root.isHovered || root.visible)
+                sourceComponent = barComponent
+            }
+        }
+
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        anchors.right: parent.right
     }
 }
