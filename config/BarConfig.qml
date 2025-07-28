@@ -25,7 +25,7 @@ JsonObject {
         property bool showKbLayout: false
         property bool showNetwork: true
         property bool showBluetooth: true
-        property bool showBattery: true
+        property bool showBattery: false
     }
 
     component Sizes: JsonObject {
