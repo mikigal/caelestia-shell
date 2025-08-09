@@ -1,6 +1,7 @@
 pragma ComponentBehavior: Bound
 
-import qs.widgets
+import qs.components
+import qs.components.controls
 import qs.services
 import qs.config
 import qs.utils
@@ -107,7 +108,7 @@ ColumnLayout {
                 implicitHeight: connectIcon.implicitHeight + Appearance.padding.small
 
                 radius: Appearance.rounding.full
-                color: device.modelData.state === BluetoothDeviceState.Connected ? Colours.palette.m3primary : Colours.palette.m3surface
+                color: device.modelData.state === BluetoothDeviceState.Connected ? Colours.palette.m3primary : Colours.tPalette.m3surface
 
                 StyledBusyIndicator {
                     anchors.centerIn: parent

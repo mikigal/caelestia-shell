@@ -1,4 +1,5 @@
-import qs.widgets
+import qs.components
+import qs.components.controls
 import qs.services
 import qs.config
 import "popouts" as BarPopouts
@@ -63,7 +64,7 @@ Item {
     anchors.bottom: parent.bottom
     anchors.left: parent.left
 
-    implicitWidth: child.implicitWidth + Config.border.thickness * 2
+    implicitWidth: child.implicitWidth + Math.max(Appearance.padding.smaller, Config.border.thickness) * 2
 
     Item {
         id: child
@@ -90,15 +91,15 @@ Item {
             anchors.topMargin: Appearance.spacing.normal
 
             radius: Appearance.rounding.full
-            color: Colours.palette.m3surfaceContainer
+            color: Colours.tPalette.m3surfaceContainer
 
             implicitWidth: workspacesInner.implicitWidth + Appearance.padding.small * 2
             implicitHeight: workspacesInner.implicitHeight + Appearance.padding.small * 2
 
             CustomMouseArea {
                 anchors.fill: parent
-                anchors.leftMargin: -Config.border.thickness
-                anchors.rightMargin: -Config.border.thickness
+                anchors.leftMargin: -Math.max(Appearance.padding.smaller, Config.border.thickness)
+                anchors.rightMargin: -Math.max(Appearance.padding.smaller, Config.border.thickness)
 
                 function onWheel(event: WheelEvent): void {
                     const activeWs = Hyprland.activeToplevel?.workspace?.name;
@@ -152,7 +153,7 @@ Item {
             anchors.bottomMargin: Appearance.spacing.normal
 
             radius: Appearance.rounding.full
-            color: Colours.palette.m3surfaceContainer
+            color: Colours.tPalette.m3surfaceContainer
 
             implicitHeight: statusIconsInner.implicitHeight + Appearance.padding.normal * 2
 

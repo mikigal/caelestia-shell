@@ -1,11 +1,11 @@
-import qs.widgets
+import qs.components
+import qs.components.images
 import qs.services
 import qs.config
 import qs.utils
 import Quickshell
 import Quickshell.Io
 import QtQuick
-import QtQuick.Dialogs
 
 Row {
     id: root
@@ -21,7 +21,7 @@ Row {
         implicitHeight: info.implicitHeight
 
         radius: Appearance.rounding.large
-        color: Colours.palette.m3surfaceContainerHigh
+        color: Colours.tPalette.m3surfaceContainerHigh
 
         MaterialIcon {
             anchors.centerIn: parent

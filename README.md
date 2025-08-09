@@ -147,16 +147,57 @@ git pull
 
 All configuration options are in `~/.config/caelestia/shell.json`.
 
+> [!NOTE]
+> The example configuration only includes recommended configuration options. For more advanced customisation
+> such as modifying the size of individual items or changing constants in the code, there are some other
+> options which can be found in the source files in the `config` directory.
+
 <details><summary>Example configuration</summary>
 
 ```json
 {
+    "appearance": {
+        "anim": {
+            "durations": {
+                "scale": 1
+            }
+        },
+        "font": {
+            "family": {
+                "material": "Material Symbols Rounded",
+                "mono": "JetBrains Mono NF",
+                "sans": "IBM Plex Sans"
+            },
+            "size": {
+                "scale": 1
+            }
+        },
+        "padding": {
+            "scale": 1
+        },
+        "rounding": {
+        	"scale": 1
+        },
+        "spacing": {
+            "scale": 1
+        },
+        "transparency": {
+            "enabled": false,
+            "base": 0.85,
+            "layers": 0.4
+        }
+    },
+    "general": {
+        "apps": {
+            "terminal": ["foot"],
+            "audio": ["pavucontrol"]
+        }
+    },
     "background": {
         "enabled": true
     },
     "bar": {
         "dragThreshold": 20,
-        "externalAudioProgram": ["pavucontrol"],
         "persistent": true,
         "showOnHover": true,
         "status": {
@@ -183,7 +224,10 @@ All configuration options are in `~/.config/caelestia/shell.json`.
         "thickness": 10
     },
     "dashboard": {
+        "enabled": true,
+        "dragThreshold": 50,
         "mediaUpdateInterval": 500,
+        "showOnHover": true,
         "visualiserBars": 45
     },
     "launcher": {
@@ -220,8 +264,10 @@ All configuration options are in `~/.config/caelestia/shell.json`.
         "wallpaperDir": "~/Pictures/Wallpapers"
     },
     "services": {
-      "weatherLocation": "10,10",
-      "useFahrenheit": false
+        "audioIncrement": 0.1,
+        "weatherLocation": "10,10",
+        "useFahrenheit": false,
+        "useTwelveHourClock": false
     },
     "session": {
         "dragThreshold": 30,
@@ -237,6 +283,48 @@ All configuration options are in `~/.config/caelestia/shell.json`.
 ```
 
 </details>
+
+## FAQ
+
+### My screen is flickering, help pls!
+
+Try disabling VRR in the hyprland config. You can do this by adding the following to `~/.config/caelestia/hypr-user.conf`:
+
+```conf
+misc {
+    vrr = 0
+}
+```
+
+### I want to make my own changes to the hyprland config!
+
+You can add your custom hyprland configs to `~/.config/caelestia/hypr-user.conf`.
+
+### I want to make my own changes to other stuff!
+
+See the [manual installation](https://github.com/caelestia-dots/shell?tab=readme-ov-file#manual-installation) section
+for the corresponding repo.
+
+### I want to disable XXX feature!
+
+Please read the [configuring](https://github.com/caelestia-dots/shell?tab=readme-ov-file#configuring) section in the readme.
+If there is no corresponding option, make feature request.
+
+### How do I make my colour scheme change with my wallpaper?
+
+Set a wallpaper via the launcher or `caelestia wallpaper` and set the scheme to the dynamic scheme via the launcher
+or `caelestia scheme set`. e.g.
+
+```sh
+caelestia wallpaper -f <path/to/file>
+caelestia scheme set -n dynamic
+```
+
+### My wallpapers aren't showing up in the launcher!
+
+The launcher pulls wallpapers from `~/Pictures/Wallpapers` by default. You can change this in the config. Additionally,
+the launcher only shows an odd number of wallpapers at one time. If you only have 2 wallpapers, consider getting more
+(or just putting one).
 
 ## Credits
 

@@ -1,5 +1,5 @@
 import "../services"
-import qs.widgets
+import qs.components
 import qs.services
 import qs.config
 import QtQuick
@@ -58,7 +58,7 @@ Item {
 
                 text: root.modelData?.desc ?? ""
                 font.pointSize: Appearance.font.size.small
-                color: Colours.alpha(Colours.palette.m3outline, true)
+                color: Colours.palette.m3outline
 
                 elide: Text.ElideRight
                 width: root.width - icon.width - Appearance.rounding.normal * 2
