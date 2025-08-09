@@ -15,7 +15,7 @@ ShellRoot {
     AreaPicker {}
     Lock {}
 
-    Dock {}
+    // Dock {}
 
     Shortcuts {}
 }
