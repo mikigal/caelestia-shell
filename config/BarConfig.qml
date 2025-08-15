@@ -5,8 +5,48 @@ JsonObject {
     property bool showOnHover: true
     property int dragThreshold: 20
     property Workspaces workspaces: Workspaces {}
+    property Tray tray: Tray {}
     property Status status: Status {}
     property Sizes sizes: Sizes {}
+
+    property list<var> entries: [
+        {
+            id: "logo",
+            enabled: true
+        },
+        {
+            id: "workspaces",
+            enabled: true
+        },
+        {
+            id: "spacer",
+            enabled: true
+        },
+        {
+            id: "activeWindow",
+            enabled: true
+        },
+        {
+            id: "spacer",
+            enabled: true
+        },
+        {
+            id: "tray",
+            enabled: true
+        },
+        {
+            id: "clock",
+            enabled: true
+        },
+        {
+            id: "statusIcons",
+            enabled: true
+        },
+        {
+            id: "power",
+            enabled: true
+        },
+    ]
 
     component Workspaces: JsonObject {
         property int shown: 5
@@ -15,9 +55,15 @@ JsonObject {
         property bool occupiedBg: false
         property bool showWindows: true
         property bool activeTrail: false
+        property bool perMonitorWorkspaces: true
         property string label: "  "
         property string occupiedLabel: "󰮯 "
         property string activeLabel: "󰮯 "
+    }
+
+    component Tray: JsonObject {
+        property bool background: false
+        property bool recolour: false
     }
 
     component Status: JsonObject {
