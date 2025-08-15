@@ -64,16 +64,9 @@ Item {
         }
     ]
 
-    Loader {
-        id: content
-
-        Component.onCompleted: active = Qt.binding(() => root.shouldBeVisible || root.visible)
-
-        anchors.top: parent.top
-        anchors.bottom: parent.bottom
-        anchors.right: parent.right
-
-        sourceComponent: Bar {
+    Component {
+        id: barComponent
+        Bar {
             screen: root.screen
             visibilities: root.visibilities
             popouts: root.popouts
