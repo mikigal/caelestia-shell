@@ -147,6 +147,7 @@ Singleton {
     }
 
     function getNotifIcon(summary: string, urgency: int): string {
+        summary = summary.toLowerCase();
         if (summary.includes("reboot"))
             return "restart_alt";
         if (summary.includes("recording"))
@@ -182,5 +183,26 @@ Singleton {
         if (volume > 0)
             return "volume_down";
         return "volume_mute";
+    }
+
+    function getMicVolumeIcon(volume: real, isMuted: bool): string {
+        if (!isMuted && volume > 0)
+            return "mic";
+        return "mic_off";
+    }
+
+    function getSpecialWsIcon(name: string): string {
+        name = name.toLowerCase().slice("special:".length);
+        if (name === "special")
+            return "star";
+        if (name === "communication")
+            return "forum";
+        if (name === "music")
+            return "music_cast";
+        if (name === "todo")
+            return "checklist";
+        if (name === "sysmon")
+            return "monitor_heart";
+        return name[0].toUpperCase();
     }
 }

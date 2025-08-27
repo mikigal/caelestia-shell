@@ -1,4 +1,8 @@
+pragma ComponentBehavior: Bound
+
+import qs.components
 import qs.components.containers
+import qs.services
 import qs.config
 import Quickshell
 import Quickshell.Wayland
@@ -29,7 +33,35 @@ Loader {
 
             Wallpaper {
                 visible: modelData.name !== "DP-3"
+                id: wallpaper
             }
+
+            Loader {
+                readonly property bool shouldBeActive: Config.background.visualiser.enabled && (!Config.background.visualiser.autoHide || Hypr.monitorFor(win.modelData).activeWorkspace.toplevels.values.every(t => t.lastIpcObject.floating)) ? 1 : 0
+                property real offset: shouldBeActive ? 0 : win.modelData.height * 0.2
+
+                anchors.fill: parent
+                anchors.topMargin: offset
+                anchors.bottomMargin: -offset
+                opacity: shouldBeActive ? 1 : 0
+                active: opacity > 0
+                asynchronous: true
+
+                sourceComponent: Visualiser {
+                    screen: win.modelData
+                    wallpaper: wallpaper
+                }
+
+                Behavior on offset {
+                    Anim {}
+                }
+
+                Behavior on opacity {
+                    Anim {}
+                }
+            }
+
+            mask: Region {}
 
             Loader {
                 anchors.right: parent.right

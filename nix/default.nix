@@ -11,7 +11,6 @@
   cava,
   networkmanager,
   lm_sensors,
-  grim,
   swappy,
   wl-clipboard,
   libqalculate,
@@ -25,10 +24,14 @@
   material-symbols,
   rubik,
   nerd-fonts,
-  gcc,
+  qt6,
   quickshell,
   aubio,
   pipewire,
+  xkeyboard-config,
+  cmake,
+  ninja,
+  pkg-config,
   caelestia-cli,
   withCli ? false,
   extraRuntimeDeps ? [],
@@ -42,7 +45,6 @@
       cava
       networkmanager
       lm_sensors
-      grim
       swappy
       wl-clipboard
       libqalculate
@@ -66,31 +68,29 @@ in
     version = "${rev}";
     src = ./..;
 
-    nativeBuildInputs = [gcc makeWrapper];
-    buildInputs = [quickshell aubio pipewire];
+    nativeBuildInputs = [cmake ninja pkg-config makeWrapper qt6.wrapQtAppsHook];
+    buildInputs = [quickshell aubio pipewire xkeyboard-config qt6.qtbase qt6.qtdeclarative];
     propagatedBuildInputs = runtimeDeps;
 
-    buildPhase = ''
-      mkdir -p bin
-      g++ -std=c++17 -Wall -Wextra \
-      	-I${pipewire.dev}/include/pipewire-0.3 \
-      	-I${pipewire.dev}/include/spa-0.2 \
-      	-I${aubio}/include/aubio \
-      	assets/beat_detector.cpp \
-      	-o bin/beat_detector \
-      	-lpipewire-0.3 -laubio
+    cmakeBuildType = "Release";
+    cmakeFlags = [
+      (lib.cmakeFeature "INSTALL_LIBDIR" "${placeholder "out"}/lib")
+      (lib.cmakeFeature "INSTALL_QMLDIR" qt6.qtbase.qtQmlPrefix)
+      (lib.cmakeFeature "INSTALL_QSCONFDIR" "${placeholder "out"}/share/caelestia-shell")
+      (lib.cmakeFeature "GIT_REVISION" rev)
+    ];
+
+    patchPhase = ''
+      substituteInPlace assets/pam.d/fprint \
+        --replace-fail pam_fprintd.so /run/current-system/sw/lib/security/pam_fprintd.so
     '';
 
-    installPhase = ''
-      install -Dm755 bin/beat_detector $out/bin/beat_detector
-
-      mkdir -p $out/share/caelestia-shell
-      cp -r ./* $out/share/caelestia-shell
-
+    postInstall = ''
       makeWrapper ${quickshell}/bin/qs $out/bin/caelestia-shell \
       	--prefix PATH : "${lib.makeBinPath runtimeDeps}" \
       	--set FONTCONFIG_FILE "${fontconfig}" \
-      	--set CAELESTIA_BD_PATH $out/bin/beat_detector \
+      	--set CAELESTIA_LIB_DIR $out/lib \
+        --set CAELESTIA_XKB_RULES_PATH ${xkeyboard-config}/share/xkeyboard-config-2/rules/base.lst \
       	--add-flags "-p $out/share/caelestia-shell"
     '';
 

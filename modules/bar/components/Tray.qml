@@ -12,7 +12,7 @@ StyledRect {
     clip: true
     visible: width > 0 && height > 0 // To avoid warnings about being visible with no size
 
-    implicitWidth: layout.implicitWidth + Math.floor(Appearance.padding.normal * 1.8)
+    implicitWidth: Config.bar.sizes.innerWidth
     implicitHeight: layout.implicitHeight + (Config.bar.tray.background ? Appearance.padding.normal : Appearance.padding.small) * 2
 
     color: Qt.alpha(Colours.tPalette.m3surfaceContainer, Config.bar.tray.background ? Colours.tPalette.m3surfaceContainer.a : 0)
@@ -25,29 +25,22 @@ StyledRect {
         spacing: Appearance.spacing.small
 
         add: Transition {
-            NumberAnimation {
+            Anim {
                 properties: "scale"
                 from: 0
                 to: 1
-                duration: Appearance.anim.durations.normal
-                easing.type: Easing.BezierSpline
                 easing.bezierCurve: Appearance.anim.curves.standardDecel
             }
         }
 
         move: Transition {
-            NumberAnimation {
+            Anim {
                 properties: "scale"
                 to: 1
-                duration: Appearance.anim.durations.normal
-                easing.type: Easing.BezierSpline
                 easing.bezierCurve: Appearance.anim.curves.standardDecel
             }
-            NumberAnimation {
+            Anim {
                 properties: "x,y"
-                duration: Appearance.anim.durations.normal
-                easing.type: Easing.BezierSpline
-                easing.bezierCurve: Appearance.anim.curves.standard
             }
         }
 
@@ -61,17 +54,13 @@ StyledRect {
     }
 
     Behavior on implicitWidth {
-        NumberAnimation {
-            duration: Appearance.anim.durations.normal
-            easing.type: Easing.BezierSpline
+        Anim {
             easing.bezierCurve: Appearance.anim.curves.emphasized
         }
     }
 
     Behavior on implicitHeight {
-        NumberAnimation {
-            duration: Appearance.anim.durations.normal
-            easing.type: Easing.BezierSpline
+        Anim {
             easing.bezierCurve: Appearance.anim.curves.emphasized
         }
     }

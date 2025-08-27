@@ -49,7 +49,7 @@
         pkgs.mkShellNoCC {
           inputsFrom = [shell];
           packages = with pkgs; [material-symbols rubik nerd-fonts.caskaydia-cove];
-          CAELESTIA_BD_PATH = "${shell}/bin/beat_detector";
+          CAELESTIA_LIB_DIR = "${shell}/lib";
         };
     });
 

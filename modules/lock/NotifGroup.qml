@@ -31,6 +31,11 @@ StyledRect {
     radius: Appearance.rounding.normal
     color: root.urgency === "critical" ? Colours.palette.m3secondaryContainer : Colours.layer(Colours.palette.m3surfaceContainerHigh, 2)
 
+    RetainableLock {
+        object: root.notifs[0]?.notiftication ?? null
+        locked: true
+    }
+
     RowLayout {
         id: content
 
@@ -74,7 +79,7 @@ StyledRect {
                 id: materialIconComp
 
                 MaterialIcon {
-                    text: Icons.getNotifIcon(root.notifs[0].summary.toLowerCase(), root.urgency)
+                    text: Icons.getNotifIcon(root.notifs[0].summary, root.urgency)
                     color: root.urgency === "critical" ? Colours.palette.m3onError : root.urgency === "low" ? Colours.palette.m3onSurface : Colours.palette.m3onSecondaryContainer
                     font.pointSize: Appearance.font.size.large
                 }
@@ -282,6 +287,11 @@ StyledRect {
         }
         color: root.urgency === "critical" ? Colours.palette.m3onSecondaryContainer : Colours.palette.m3onSurface
 
+        RetainableLock {
+            object: notifLine.modelData.notification
+            locked: true
+        }
+
         TextMetrics {
             id: metrics
 
@@ -291,11 +301,5 @@ StyledRect {
             elideWidth: notifLine.width
             elide: Text.ElideRight
         }
-    }
-
-    component Anim: NumberAnimation {
-        duration: Appearance.anim.durations.normal
-        easing.type: Easing.BezierSpline
-        easing.bezierCurve: Appearance.anim.curves.standard
     }
 }

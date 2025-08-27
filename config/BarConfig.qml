@@ -7,6 +7,7 @@ JsonObject {
     property Workspaces workspaces: Workspaces {}
     property Tray tray: Tray {}
     property Status status: Status {}
+    property Clock clock: Clock {}
     property Sizes sizes: Sizes {}
 
     property list<var> entries: [
@@ -46,19 +47,22 @@ JsonObject {
             id: "power",
             enabled: true
         },
+        {
+            id: "idleInhibitor",
+            enabled: false
+        }
     ]
 
     component Workspaces: JsonObject {
         property int shown: 5
-        property bool rounded: true
         property bool activeIndicator: true
         property bool occupiedBg: false
         property bool showWindows: true
         property bool activeTrail: false
         property bool perMonitorWorkspaces: true
         property string label: "  "
-        property string occupiedLabel: "󰮯 "
-        property string activeLabel: "󰮯 "
+        property string occupiedLabel: "󰮯"
+        property string activeLabel: "󰮯"
     }
 
     component Tray: JsonObject {
@@ -74,8 +78,12 @@ JsonObject {
         property bool showBattery: false
     }
 
+    component Clock: JsonObject {
+        property bool showIcon: true
+    }
+
     component Sizes: JsonObject {
-        property int innerHeight: 30
+        property int innerWidth: 40
         property int windowPreviewSize: 400
         property int trayMenuWidth: 300
         property int batteryWidth: 250

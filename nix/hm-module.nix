@@ -4,8 +4,10 @@ self: {
   lib,
   ...
 }: let
-  cli-default = self.inputs.caelestia-cli.packages.${pkgs.system}.default;
-  shell-default = self.packages.${pkgs.system}.with-cli;
+  inherit (pkgs.stdenv.hostPlatform) system;
+
+  cli-default = self.inputs.caelestia-cli.packages.${system}.default;
+  shell-default = self.packages.${system}.with-cli;
 
   cfg = config.programs.caelestia;
 in {
@@ -18,7 +20,7 @@ in {
         description = "The package of Caelestia shell";
       };
       settings = mkOption {
-        type = types.attrs;
+        type = types.attrsOf types.anything;
         default = {};
         description = "Caelestia shell settings";
       };
@@ -35,7 +37,7 @@ in {
           description = "The package of Caelestia CLI"; # Doesn't override the shell's CLI, only change from home.packages
         };
         settings = mkOption {
-          type = types.attrs;
+          type = types.attrsOf types.anything;
           default = {};
           description = "Caelestia CLI settings";
         };
@@ -58,6 +60,9 @@ in {
           Description = "Caelestia Shell Service";
           After = ["graphical-session.target"];
           PartOf = ["graphical-session.target"];
+          X-Restart-Triggers = lib.mkIf (cfg.settings != { }) [
+            "${config.xdg.configFile."caelestia/shell.json".source}"
+          ];
         };
 
         Service = {

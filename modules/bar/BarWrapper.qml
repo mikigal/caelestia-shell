@@ -1,5 +1,6 @@
 pragma ComponentBehavior: Bound
 
+import qs.components
 import qs.config
 import "popouts" as BarPopouts
 import Quickshell
@@ -12,7 +13,9 @@ Item {
     required property PersistentProperties visibilities
     required property BarPopouts.Wrapper popouts
 
-    readonly property int exclusiveZone: Config.bar.persistent || visibilities.bar ? content.implicitWidth : Config.border.thickness
+    readonly property int padding: Math.max(Appearance.padding.smaller, Config.border.thickness)
+    readonly property int contentWidth: Config.bar.sizes.innerWidth + padding * 2
+    readonly property int exclusiveZone: Config.bar.persistent || visibilities.bar ? contentWidth : Config.border.thickness
     readonly property bool shouldBeVisible: Config.bar.persistent || visibilities.bar || isHovered
     property bool isHovered
 
@@ -26,14 +29,13 @@ Item {
 
     visible: width > Config.border.thickness
     implicitWidth: Config.border.thickness
-    implicitHeight: content.implicitHeight
 
     states: State {
         name: "visible"
         when: root.shouldBeVisible
 
         PropertyChanges {
-            root.implicitWidth: content.implicitWidth
+            root.implicitWidth: root.contentWidth
         }
     }
 
@@ -42,11 +44,10 @@ Item {
             from: ""
             to: "visible"
 
-            NumberAnimation {
+            Anim {
                 target: root
                 property: "implicitWidth"
                 duration: Appearance.anim.durations.expressiveDefaultSpatial
-                easing.type: Easing.BezierSpline
                 easing.bezierCurve: Appearance.anim.curves.expressiveDefaultSpatial
             }
         },
@@ -54,19 +55,19 @@ Item {
             from: "visible"
             to: ""
 
-            NumberAnimation {
+            Anim {
                 target: root
                 property: "implicitWidth"
-                duration: Appearance.anim.durations.normal
-                easing.type: Easing.BezierSpline
                 easing.bezierCurve: Appearance.anim.curves.emphasized
             }
         }
     ]
 
+
     Component {
         id: barComponent
         Bar {
+            width: root.contentWidth
             screen: root.screen
             visibilities: root.visibilities
             popouts: root.popouts
