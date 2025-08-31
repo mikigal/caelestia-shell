@@ -23,14 +23,51 @@ https://github.com/user-attachments/assets/0840f496-575c-4ca6-83a8-87bb01a85c5f
 > This repo is for the desktop shell of the caelestia dots. If you want installation instructions
 > for the entire dots, head to [the main repo](https://github.com/caelestia-dots/caelestia) instead.
 
-### Package manager
+### Arch linux
 
 > [!NOTE]
 > If you want to make your own changes/tweaks to the shell do NOT edit the files installed by the AUR
 > package. Instead, follow the instructions in the [manual installation section](#manual-installation).
 
-The shell is available from the AUR as `caelestia-shell-git`. You can install it with an AUR helper
+The shell is available from the AUR as `caelestia-shell`. You can install it with an AUR helper
 like [`yay`](https://github.com/Jguer/yay) or manually downloading the PKGBUILD and running `makepkg -si`.
+
+A package following the latest commit also exists as `caelestia-shell-git`. This is bleeding edge
+and likely to be unstable/have bugs. Regular users are recommended to use the stable package
+(`caelestia-shell`).
+
+### Nix
+
+You can run the shell directly via `nix run`:
+
+```sh
+nix run github:caelestia-dots/shell
+```
+
+Or add it to your system configuration:
+
+```nix
+{
+  inputs = {
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+
+    caelestia-shell = {
+      url = "github:caelestia-dots/shell";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+  };
+}
+```
+
+The package is available as `caelestia-shell.packages.<system>.default`, which can be added to your
+`environment.systemPackages`, `users.users.<username>.packages`, `home.packages` if using home-manager,
+or a devshell. The shell can then be run via `caelestia-shell`.
+
+> [!TIP]
+> The default package does not have the CLI enabled by default, which is required for full funcionality.
+> To enable the CLI, use the `with-cli` package.
+
+For home-manager, you can also use the Caelestia's home manager module (explained in [configuring](https://github.com/caelestia-dots/shell?tab=readme-ov-file#configuring)) that installs and configures the shell and the CLI.
 
 ### Manual installation
 
@@ -71,7 +108,7 @@ cd $XDG_CONFIG_HOME/quickshell
 git clone https://github.com/caelestia-dots/shell.git caelestia
 
 cd caelestia
-cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
+cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/
 cmake --build build
 sudo cmake --install build
 ```
@@ -81,6 +118,16 @@ sudo cmake --install build
 > `INSTALL_QSCONFDIR` for the libraries (the beat detector), QML plugin and Quickshell config directories
 > respectively. If changing the library directory, remember to set the `CAELESTIA_LIB_DIR` environment
 > variable to the custom directory when launching the shell.
+>
+> e.g. installing to `~/.config/quickshell/caelestia` for easy local changes:
+>
+> ```sh
+> mkdir -p ~/.config/quickshell/caelestia
+> cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/ -DINSTALL_QSCONFDIR=~/.config/quickshell/caelestia
+> cmake --build build
+> sudo cmake --install build
+> sudo chown -R $USER ~/.config/quickshell/caelestia
+> ```
 
 ## Usage
 
@@ -158,6 +205,33 @@ git pull
 
 All configuration options should be put in `~/.config/caelestia/shell.json`. This file is _not_ created by
 default, you must create it manually.
+
+For NixOS users, a home manager module is also available.
+
+<details><summary><code>home.nix</code></summary>
+
+```nix
+programs.caelestia = {
+  enable = true;
+  systemd.enable = false; # if you prefer starting from your compositor
+  settings = {
+    bar.status = {
+      showBattery = false;
+    };
+    paths.wallpaperDir = "~/Images";
+  };
+  cli = {
+    enable = true; # Also add caelestia-cli to path
+    settings = {
+      theme.enableGtk = false;
+    };
+  };
+};
+```
+
+The module automatically adds Caelestia shell to the path with **full functionality**. The CLI is not required, however you have the option to enable and configure it.
+
+</details>
 
 > [!NOTE]
 > The example configuration only includes recommended configuration options. For more advanced customisation
@@ -313,7 +387,8 @@ default, you must create it manually.
             "schemes": false,
             "variants": false,
             "wallpapers": false
-        }
+        },
+        "showOnHover": false
     },
     "lock": {
         "recolourLogo": false
@@ -341,9 +416,7 @@ default, you must create it manually.
         "defaultPlayer": "Spotify",
         "gpuType": "",
         "playerAliases": [
-            {
-                "com.github.th_ch.youtube_music": "YT Music"
-            }
+            { "from": "com.github.th_ch.youtube_music", "to": "YT Music" }
         ],
         "weatherLocation": "",
         "useFahrenheit": false,
@@ -421,7 +494,7 @@ which helped me a lot with learning how to use Quickshell.
 
 Finally another thank you to all the configs I took inspiration from (only one for now):
 
--   [Axenide/Ax-Shell](https://github.com/Axenide/Ax-Shell)
+- [Axenide/Ax-Shell](https://github.com/Axenide/Ax-Shell)
 
 ## Stonks 📈
 
