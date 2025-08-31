@@ -5,7 +5,7 @@ JsonObject {
     property int defaultExpireTimeout: 5000
     property real clearThreshold: 0.3
     property int expandThreshold: 20
-    property bool actionOnClick: false
+    property bool actionOnClick: true
     property int groupPreviewNum: 3
     property Sizes sizes: Sizes {}
 
