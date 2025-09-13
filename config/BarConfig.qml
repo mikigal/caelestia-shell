@@ -4,6 +4,7 @@ JsonObject {
     property bool persistent: true
     property bool showOnHover: true
     property int dragThreshold: 20
+    property ScrollActions scrollActions: ScrollActions {}
     property Workspaces workspaces: Workspaces {}
     property Tray tray: Tray {}
     property Status status: Status {}
@@ -46,36 +47,43 @@ JsonObject {
         {
             id: "power",
             enabled: true
-        },
-        {
-            id: "idleInhibitor",
-            enabled: false
         }
     ]
+
+    component ScrollActions: JsonObject {
+        property bool workspaces: true
+        property bool volume: true
+        property bool brightness: true
+    }
 
     component Workspaces: JsonObject {
         property int shown: 5
         property bool activeIndicator: true
         property bool occupiedBg: false
         property bool showWindows: true
+        property bool showWindowsOnSpecialWorkspaces: showWindows
         property bool activeTrail: false
         property bool perMonitorWorkspaces: true
-        property string label: "  "
+        property string label: "  " // if empty, will show workspace name's first letter
         property string occupiedLabel: "󰮯"
         property string activeLabel: "󰮯"
+        property string capitalisation: "preserve" // upper, lower, or preserve - relevant only if label is empty
     }
 
     component Tray: JsonObject {
         property bool background: false
         property bool recolour: false
+        property list<var> iconSubs: []
     }
 
     component Status: JsonObject {
         property bool showAudio: false
+        property bool showMicrophone: false
         property bool showKbLayout: false
         property bool showNetwork: true
         property bool showBluetooth: true
         property bool showBattery: false
+        property bool showLockStatus: true
     }
 
     component Clock: JsonObject {

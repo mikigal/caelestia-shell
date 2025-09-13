@@ -2,11 +2,11 @@ pragma ComponentBehavior: Bound
 
 import qs.components
 import qs.components.effects
-import qs.components.misc
 import qs.components.controls
 import qs.services
 import qs.utils
 import qs.config
+import Caelestia.Services
 import Quickshell
 import Quickshell.Widgets
 import Quickshell.Services.Mpris
@@ -54,8 +54,12 @@ Item {
         onTriggered: Players.active?.positionChanged()
     }
 
-    Ref {
-        service: Cava
+    ServiceRef {
+        service: Audio.cava
+    }
+
+    ServiceRef {
+        service: Audio.beatTracker
     }
 
     Shape {
@@ -86,10 +90,10 @@ Item {
             id: visualiserBar
 
             required property int modelData
-            readonly property int value: Math.max(1, Math.min(100, Cava.values[modelData]))
+            readonly property real value: Math.max(1e-3, Math.min(1, Audio.cava.values[modelData]))
 
             readonly property real angle: modelData * 2 * Math.PI / Config.services.visualiserBars
-            readonly property real magnitude: value / 100 * Config.dashboard.sizes.mediaVisualiserSize
+            readonly property real magnitude: value * Config.dashboard.sizes.mediaVisualiserSize
             readonly property real cos: Math.cos(angle)
             readonly property real sin: Math.sin(angle)
 
@@ -283,11 +287,34 @@ Item {
             implicitWidth: controls.implicitWidth * 1.5
             implicitHeight: Appearance.padding.normal * 3
 
-            value: root.playerProgress
             onMoved: {
                 const active = Players.active;
                 if (active?.canSeek && active?.positionSupported)
                     active.position = value * active.length;
+            }
+
+            Binding {
+                target: slider
+                property: "value"
+                value: root.playerProgress
+                when: !slider.pressed
+            }
+
+            CustomMouseArea {
+                anchors.fill: parent
+                acceptedButtons: Qt.NoButton
+
+                function onWheel(event: WheelEvent) {
+                    const active = Players.active;
+                    if (!active?.canSeek || !active?.positionSupported)
+                        return;
+
+                    event.accepted = true;
+                    const delta = event.angleDelta.y > 0 ? 10 : -10;    // Time 10 seconds
+                    Qt.callLater(() => {
+                        active.position = Math.max(0, Math.min(active.length, active.position + delta));
+                    });
+                }
             }
         }
 
@@ -502,8 +529,8 @@ Item {
             height: visualiser.height * 0.75
 
             playing: Players.active?.isPlaying ?? false
-            speed: BeatDetector.bpm / 300
-            source: Paths.expandTilde(Config.paths.mediaGif)
+            speed: Audio.beatTracker.bpm / 300
+            source: Paths.absolutePath(Config.paths.mediaGif)
             asynchronous: true
             fillMode: AnimatedImage.PreserveAspectFit
         }
@@ -516,7 +543,6 @@ Item {
         readonly property string icon: Icons.getAppIcon(player?.identity)
 
         Layout.fillHeight: true
-        asynchronous: true
         sourceComponent: !player || icon === "image://icon/" ? fallbackIcon : playerImage
 
         Component {

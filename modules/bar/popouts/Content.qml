@@ -10,11 +10,13 @@ Item {
     id: root
 
     required property Item wrapper
+    readonly property Popout currentPopout: content.children.find(c => c.shouldBeActive) ?? null
+    readonly property Item current: currentPopout?.item ?? null
 
     anchors.centerIn: parent
 
-    implicitWidth: (content.children.find(c => c.shouldBeActive)?.implicitWidth ?? 0) + Appearance.padding.large * 2
-    implicitHeight: (content.children.find(c => c.shouldBeActive)?.implicitHeight ?? 0) + Appearance.padding.large * 2
+    implicitWidth: (currentPopout?.implicitWidth ?? 0) + Appearance.padding.large * 2
+    implicitHeight: (currentPopout?.implicitHeight ?? 0) + Appearance.padding.large * 2
 
     Item {
         id: content
@@ -56,6 +58,11 @@ Item {
         Popout {
             name: "kblayout"
             source: "KbLayout.qml"
+        }
+
+        Popout {
+            name: "lockstatus"
+            source: "LockStatus.qml"
         }
 
         Repeater {
@@ -107,7 +114,6 @@ Item {
         opacity: 0
         scale: 0.8
         active: false
-        asynchronous: true
 
         states: State {
             name: "active"

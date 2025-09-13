@@ -1,21 +1,25 @@
 #pragma once
 
+#include <QtQuick/qquickitem.h>
 #include <qobject.h>
 #include <qqmlintegration.h>
-#include <QtQuick/QQuickItem>
+
+namespace caelestia {
 
 class CachingImageManager : public QObject {
-    Q_OBJECT;
-    QML_ELEMENT;
+    Q_OBJECT
+    QML_ELEMENT
 
-    Q_PROPERTY(QQuickItem* item READ item WRITE setItem NOTIFY itemChanged REQUIRED);
-    Q_PROPERTY(QUrl cacheDir READ cacheDir WRITE setCacheDir NOTIFY cacheDirChanged REQUIRED);
+    Q_PROPERTY(QQuickItem* item READ item WRITE setItem NOTIFY itemChanged REQUIRED)
+    Q_PROPERTY(QUrl cacheDir READ cacheDir WRITE setCacheDir NOTIFY cacheDirChanged REQUIRED)
 
-    Q_PROPERTY(QString path READ path WRITE setPath NOTIFY pathChanged);
-    Q_PROPERTY(QUrl cachePath READ cachePath NOTIFY cachePathChanged);
+    Q_PROPERTY(QString path READ path WRITE setPath NOTIFY pathChanged)
+    Q_PROPERTY(QUrl cachePath READ cachePath NOTIFY cachePathChanged)
 
 public:
-    explicit CachingImageManager(QObject* parent = nullptr): QObject(parent) {};
+    explicit CachingImageManager(QObject* parent = nullptr)
+        : QObject(parent)
+        , m_item(nullptr) {}
 
     [[nodiscard]] QQuickItem* item() const;
     void setItem(QQuickItem* item);
@@ -52,9 +56,10 @@ private:
     QMetaObject::Connection m_heightConn;
 
     [[nodiscard]] qreal effectiveScale() const;
-    [[nodiscard]] int effectiveWidth() const;
-    [[nodiscard]] int effectiveHeight() const;
+    [[nodiscard]] QSize effectiveSize() const;
 
     void createCache(const QString& path, const QString& cache, const QString& fillMode, const QSize& size) const;
-    [[nodiscard]] QString sha256sum(const QString& path) const;
+    [[nodiscard]] static QString sha256sum(const QString& path);
 };
+
+} // namespace caelestia

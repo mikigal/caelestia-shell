@@ -1,6 +1,7 @@
 pragma ComponentBehavior: Bound
 
 import qs.components
+import qs.components.filedialog
 import qs.config
 import Quickshell
 import Quickshell.Widgets
@@ -12,10 +13,12 @@ Item {
 
     required property PersistentProperties visibilities
     required property PersistentProperties state
+    required property FileDialog facePicker
     readonly property real nonAnimWidth: view.implicitWidth + viewWrapper.anchors.margins * 2
+    readonly property real nonAnimHeight: tabs.implicitHeight + tabs.anchors.topMargin + view.implicitHeight + viewWrapper.anchors.margins * 2
 
     implicitWidth: nonAnimWidth
-    implicitHeight: tabs.implicitHeight + tabs.anchors.topMargin + view.implicitHeight + viewWrapper.anchors.margins * 2
+    implicitHeight: nonAnimHeight
 
     Tabs {
         id: tabs
@@ -87,6 +90,7 @@ Item {
                     sourceComponent: Dash {
                         visibilities: root.visibilities
                         state: root.state
+                        facePicker: root.facePicker
                     }
                 }
 

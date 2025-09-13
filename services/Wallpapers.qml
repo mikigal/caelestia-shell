@@ -2,7 +2,7 @@ pragma Singleton
 
 import qs.config
 import qs.utils
-import Caelestia
+import Caelestia.Models
 import Quickshell
 import Quickshell.Io
 import QtQuick
@@ -10,7 +10,7 @@ import QtQuick
 Searcher {
     id: root
 
-    readonly property string currentNamePath: Paths.strip(`${Paths.state}/wallpaper/path.txt`)
+    readonly property string currentNamePath: `${Paths.state}/wallpaper/path.txt`
     readonly property list<string> smartArg: Config.services.smartScheme ? [] : ["--no-smart"]
 
     property bool showPreview: false
@@ -38,9 +38,8 @@ Searcher {
             Colours.showPreview = false;
     }
 
-    reloadableId: "wallpapers"
-
     list: wallpapers.entries
+    key: "relativePath"
     useFuzzy: Config.launcher.useFuzzy.wallpapers
     extraOpts: useFuzzy ? ({}) : ({
             forward: false
@@ -75,7 +74,8 @@ Searcher {
     FileSystemModel {
         id: wallpapers
 
-        path: Paths.expandTilde(Paths.wallsdir)
+        recursive: true
+        path: Paths.wallsdir
         filter: FileSystemModel.Images
     }
 

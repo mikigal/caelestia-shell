@@ -11,18 +11,15 @@ import QtQuick
 Item {
     id: root
 
-    required property var wrapper
     required property PersistentProperties visibilities
     required property var panels
+    required property real maxHeight
 
     readonly property int padding: Appearance.padding.large
     readonly property int rounding: Appearance.rounding.large
 
     implicitWidth: listWrapper.width + padding * 2
     implicitHeight: searchWrapper.height + listWrapper.height + padding * 2
-
-    anchors.top: parent.top
-    anchors.horizontalCenter: parent.horizontalCenter
 
     Item {
         id: listWrapper
@@ -37,9 +34,10 @@ Item {
         ContentList {
             id: list
 
-            wrapper: root.wrapper
+            content: root
             visibilities: root.visibilities
             panels: root.panels
+            maxHeight: root.maxHeight - searchWrapper.implicitHeight - root.padding * 3
             search: search
             padding: root.padding
             rounding: root.rounding
@@ -129,23 +127,19 @@ Item {
                 }
             }
 
+            Component.onCompleted: forceActiveFocus()
+
             Connections {
                 target: root.visibilities
 
                 function onLauncherChanged(): void {
-                    if (root.visibilities.launcher)
-                        search.focus = true;
-                    else {
+                    if (!root.visibilities.launcher)
                         search.text = "";
-                        const current = list.currentList;
-                        if (current)
-                            current.currentIndex = 0;
-                    }
                 }
 
                 function onSessionChanged(): void {
-                    if (root.visibilities.launcher && !root.visibilities.session)
-                        search.focus = true;
+                    if (!root.visibilities.session)
+                        search.forceActiveFocus();
                 }
             }
         }

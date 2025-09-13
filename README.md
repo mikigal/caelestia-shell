@@ -67,7 +67,7 @@ or a devshell. The shell can then be run via `caelestia-shell`.
 > The default package does not have the CLI enabled by default, which is required for full funcionality.
 > To enable the CLI, use the `with-cli` package.
 
-For home-manager, you can also use the Caelestia's home manager module (explained in [configuring](https://github.com/caelestia-dots/shell?tab=readme-ov-file#configuring)) that installs and configures the shell and the CLI.
+For home-manager, you can also use the Caelestia's home manager module (explained in [configuring](https://github.com/caelestia-dots/shell?tab=readme-ov-file#home-manager-module)) that installs and configures the shell and the CLI.
 
 ### Manual installation
 
@@ -78,7 +78,7 @@ Dependencies:
 -   [`ddcutil`](https://github.com/rockowitz/ddcutil)
 -   [`brightnessctl`](https://github.com/Hummer12007/brightnessctl)
 -   [`app2unit`](https://github.com/Vladimir-csp/app2unit)
--   [`cava`](https://github.com/karlstav/cava)
+-   [`libcava`](https://github.com/LukashonakV/cava)
 -   [`networkmanager`](https://networkmanager.dev)
 -   [`lm-sensors`](https://github.com/lm-sensors/lm-sensors)
 -   [`fish`](https://github.com/fish-shell/fish-shell)
@@ -206,39 +206,14 @@ git pull
 All configuration options should be put in `~/.config/caelestia/shell.json`. This file is _not_ created by
 default, you must create it manually.
 
-For NixOS users, a home manager module is also available.
-
-<details><summary><code>home.nix</code></summary>
-
-```nix
-programs.caelestia = {
-  enable = true;
-  systemd.enable = false; # if you prefer starting from your compositor
-  settings = {
-    bar.status = {
-      showBattery = false;
-    };
-    paths.wallpaperDir = "~/Images";
-  };
-  cli = {
-    enable = true; # Also add caelestia-cli to path
-    settings = {
-      theme.enableGtk = false;
-    };
-  };
-};
-```
-
-The module automatically adds Caelestia shell to the path with **full functionality**. The CLI is not required, however you have the option to enable and configure it.
-
-</details>
+### Example configuration
 
 > [!NOTE]
 > The example configuration only includes recommended configuration options. For more advanced customisation
 > such as modifying the size of individual items or changing constants in the code, there are some other
 > options which can be found in the source files in the `config` directory.
 
-<details><summary>Example configuration</summary>
+<details><summary>Example</summary>
 
 ```json
 {
@@ -332,23 +307,27 @@ The module automatically adds Caelestia shell to the path with **full functional
             {
                 "id": "power",
                 "enabled": true
-            },
-            {
-                "id": "idleInhibitor",
-                "enabled": false
             }
         ],
         "persistent": true,
+        "scrollActions": {
+            "brightness": true,
+            "workspaces": true,
+            "volume": true
+        },
         "showOnHover": true,
         "status": {
             "showAudio": false,
             "showBattery": true,
             "showBluetooth": true,
             "showKbLayout": false,
-            "showNetwork": true
+            "showMicrophone": false,
+            "showNetwork": true,
+            "showLockStatus": true
         },
         "tray": {
             "background": false,
+            "iconSubs": [],
             "recolour": false
         },
         "workspaces": {
@@ -375,10 +354,116 @@ The module automatically adds Caelestia shell to the path with **full functional
     },
     "launcher": {
         "actionPrefix": ">",
+        "actions": [
+            {
+                "name": "Calculator",
+                "icon": "calculate",
+                "description": "Do simple math equations (powered by Qalc)",
+                "command": ["autocomplete", "calc"],
+                "enabled": true,
+                "dangerous": false
+            },
+            {
+                "name": "Scheme",
+                "icon": "palette",
+                "description": "Change the current colour scheme",
+                "command": ["autocomplete", "scheme"],
+                "enabled": true,
+                "dangerous": false
+            },
+            {
+                "name": "Wallpaper",
+                "icon": "image",
+                "description": "Change the current wallpaper",
+                "command": ["autocomplete", "wallpaper"],
+                "enabled": true,
+                "dangerous": false
+            },
+            {
+                "name": "Variant",
+                "icon": "colors",
+                "description": "Change the current scheme variant",
+                "command": ["autocomplete", "variant"],
+                "enabled": true,
+                "dangerous": false
+            },
+            {
+                "name": "Transparency",
+                "icon": "opacity",
+                "description": "Change shell transparency",
+                "command": ["autocomplete", "transparency"],
+                "enabled": false,
+                "dangerous": false
+            },
+            {
+                "name": "Random",
+                "icon": "casino",
+                "description": "Switch to a random wallpaper",
+                "command": ["caelestia", "wallpaper", "-r"],
+                "enabled": true,
+                "dangerous": false
+            },
+            {
+                "name": "Light",
+                "icon": "light_mode",
+                "description": "Change the scheme to light mode",
+                "command": ["setMode", "light"],
+                "enabled": true,
+                "dangerous": false
+            },
+            {
+                "name": "Dark",
+                "icon": "dark_mode",
+                "description": "Change the scheme to dark mode",
+                "command": ["setMode", "dark"],
+                "enabled": true,
+                "dangerous": false
+            },
+            {
+                "name": "Shutdown",
+                "icon": "power_settings_new",
+                "description": "Shutdown the system",
+                "command": ["systemctl", "poweroff"],
+                "enabled": true,
+                "dangerous": true
+            },
+            {
+                "name": "Reboot",
+                "icon": "cached",
+                "description": "Reboot the system",
+                "command": ["systemctl", "reboot"],
+                "enabled": true,
+                "dangerous": true
+            },
+            {
+                "name": "Logout",
+                "icon": "exit_to_app",
+                "description": "Log out of the current session",
+                "command": ["loginctl", "terminate-user", ""],
+                "enabled": true,
+                "dangerous": true
+            },
+            {
+                "name": "Lock",
+                "icon": "lock",
+                "description": "Lock the current session",
+                "command": ["loginctl", "lock-session"],
+                "enabled": true,
+                "dangerous": false
+            },
+            {
+                "name": "Sleep",
+                "icon": "bedtime",
+                "description": "Suspend then hibernate",
+                "command": ["systemctl", "suspend-then-hibernate"],
+                "enabled": true,
+                "dangerous": false
+            }
+        ],
         "dragThreshold": 50,
         "vimKeybinds": false,
         "enableDangerousActions": false,
-        "maxShown": 8,
+        "maxShown": 7,
         "maxWallpapers": 9,
         "specialPrefix": "@",
         "useFuzzy": {
@@ -388,7 +473,8 @@ The module automatically adds Caelestia shell to the path with **full functional
             "variants": false,
             "wallpapers": false
         },
-        "showOnHover": false
+        "showOnHover": false,
+        "hiddenApps": []
     },
     "lock": {
         "recolourLogo": false
@@ -415,9 +501,7 @@ The module automatically adds Caelestia shell to the path with **full functional
         "audioIncrement": 0.1,
         "defaultPlayer": "Spotify",
         "gpuType": "",
-        "playerAliases": [
-            { "from": "com.github.th_ch.youtube_music", "to": "YT Music" }
-        ],
+        "playerAliases": [{ "from": "com.github.th_ch.youtube_music", "to": "YT Music" }],
         "weatherLocation": "",
         "useFahrenheit": false,
         "useTwelveHourClock": false,
@@ -433,9 +517,45 @@ The module automatically adds Caelestia shell to the path with **full functional
             "hibernate": ["systemctl", "hibernate"],
             "reboot": ["systemctl", "reboot"]
         }
+    },
+    "utilities": {
+        "enabled": true
     }
 }
 ```
+
+</details>
+
+### Home Manager Module
+
+For NixOS users, a home manager module is also available.
+
+<details><summary><code>home.nix</code></summary>
+
+```nix
+programs.caelestia = {
+  enable = true;
+  systemd = {
+    enable = false; # if you prefer starting from your compositor
+    target = "graphical-session.target";
+    environment = [];
+  };
+  settings = {
+    bar.status = {
+      showBattery = false;
+    };
+    paths.wallpaperDir = "~/Images";
+  };
+  cli = {
+    enable = true; # Also add caelestia-cli to path
+    settings = {
+      theme.enableGtk = false;
+    };
+  };
+};
+```
+
+The module automatically adds Caelestia shell to the path with **full functionality**. The CLI is not required, however you have the option to enable and configure it.
 
 </details>
 
@@ -494,7 +614,7 @@ which helped me a lot with learning how to use Quickshell.
 
 Finally another thank you to all the configs I took inspiration from (only one for now):
 
-- [Axenide/Ax-Shell](https://github.com/Axenide/Ax-Shell)
+-   [Axenide/Ax-Shell](https://github.com/Axenide/Ax-Shell)
 
 ## Stonks 📈
 

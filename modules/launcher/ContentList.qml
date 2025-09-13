@@ -1,20 +1,21 @@
 pragma ComponentBehavior: Bound
 
 import qs.components
+import qs.components.controls
 import qs.services
 import qs.config
 import qs.utils
 import Quickshell
 import QtQuick
-import QtQuick.Controls
 
 Item {
     id: root
 
-    required property var wrapper
+    required property var content
     required property PersistentProperties visibilities
     required property var panels
-    required property TextField search
+    required property real maxHeight
+    required property StyledTextField search
     required property int padding
     required property int rounding
 
@@ -33,7 +34,7 @@ Item {
 
             PropertyChanges {
                 root.implicitWidth: Config.launcher.sizes.itemWidth
-                root.implicitHeight: appList.implicitHeight > 0 ? appList.implicitHeight : empty.implicitHeight
+                root.implicitHeight: Math.min(root.maxHeight, appList.implicitHeight > 0 ? appList.implicitHeight : empty.implicitHeight)
                 appList.active: true
             }
 
@@ -77,10 +78,8 @@ Item {
         id: appList
 
         active: false
-        asynchronous: true
 
-        anchors.left: parent.left
-        anchors.right: parent.right
+        anchors.fill: parent
 
         sourceComponent: AppList {
             search: root.search
@@ -92,7 +91,6 @@ Item {
         id: wallpaperList
 
         active: false
-        asynchronous: true
 
         anchors.top: parent.top
         anchors.bottom: parent.bottom
@@ -102,7 +100,7 @@ Item {
             search: root.search
             visibilities: root.visibilities
             panels: root.panels
-            wrapper: root.wrapper
+            content: root.content
         }
     }
 

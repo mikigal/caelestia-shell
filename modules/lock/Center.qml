@@ -105,7 +105,7 @@ ColumnLayout {
             id: pfp
 
             anchors.fill: parent
-            path: `${Paths.stringify(Paths.home)}/.face`
+            path: `${Paths.home}/.face`
         }
     }
 
@@ -174,7 +174,7 @@ ColumnLayout {
                     }
                 }
 
-                StyledBusyIndicator {
+                CircularIndicator {
                     anchors.fill: parent
                     running: root.lock.pam.passwd.active
                 }

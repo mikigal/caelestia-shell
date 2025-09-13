@@ -11,6 +11,9 @@ self: {
 
   cfg = config.programs.caelestia;
 in {
+  imports = [
+    (lib.mkRenamedOptionModule ["programs" "caelestia" "environment"] ["programs" "caelestia" "systemd" "environment"])
+  ];
   options = with lib; {
     programs.caelestia = {
       enable = mkEnableOption "Enable Caelestia shell";
@@ -24,6 +27,21 @@ in {
           type = types.bool;
           default = true;
           description = "Enable the systemd service for Caelestia shell";
+        };
+        target = mkOption {
+          type = types.str;
+          description = ''
+            The systemd target that will automatically start the Caelestia shell.
+          '';
+          default = config.wayland.systemd.target;
+        };
+        environment = mkOption {
+          type = types.listOf types.str;
+          description = "Extra Environment variables to pass to the Caelestia shell systemd service.";
+          default = [];
+          example = [
+            "QT_QPA_PLATFORMTHEME=gtk3"
+          ];
         };
       };
       settings = mkOption {
@@ -58,15 +76,15 @@ in {
   };
 
   config = let
-    cli = cfg.cli.package or cli-default;
-    shell = cfg.package or shell-default;
+    cli = cfg.cli.package;
+    shell = cfg.package;
   in
     lib.mkIf cfg.enable {
       systemd.user.services.caelestia = lib.mkIf cfg.systemd.enable {
         Unit = {
           Description = "Caelestia Shell Service";
-          After = ["graphical-session.target"];
-          PartOf = ["graphical-session.target"];
+          After = [cfg.systemd.target];
+          PartOf = [cfg.systemd.target];
           X-Restart-Triggers = lib.mkIf (cfg.settings != {}) [
             "${config.xdg.configFile."caelestia/shell.json".source}"
           ];
@@ -78,15 +96,17 @@ in {
           Restart = "on-failure";
           RestartSec = "5s";
           TimeoutStopSec = "5s";
-          Environment = [
-            "QT_QPA_PLATFORM=wayland"
-          ];
+          Environment =
+            [
+              "QT_QPA_PLATFORM=wayland"
+            ]
+            ++ cfg.systemd.environment;
 
           Slice = "session.slice";
         };
 
         Install = {
-          WantedBy = ["graphical-session.target"];
+          WantedBy = [cfg.systemd.target];
         };
       };
 

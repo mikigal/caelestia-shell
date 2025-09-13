@@ -1,5 +1,5 @@
 import qs.utils
-import Caelestia
+import Caelestia.Internal
 import Quickshell
 import QtQuick
 
@@ -8,13 +8,8 @@ Image {
 
     property alias path: manager.path
 
-    property int sourceWidth
-    property int sourceHeight
-
     asynchronous: true
     fillMode: Image.PreserveAspectCrop
-    sourceSize.width: sourceWidth
-    sourceSize.height: sourceHeight
 
     Connections {
         target: QsWindow.window
@@ -28,6 +23,6 @@ Image {
         id: manager
 
         item: root
-        cacheDir: Paths.imagecache
+        cacheDir: Qt.resolvedUrl(Paths.imagecache)
     }
 }
