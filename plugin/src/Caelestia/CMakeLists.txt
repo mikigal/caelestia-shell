@@ -13,7 +13,7 @@ function(qml_module arg_TARGET)
 
     qt_add_qml_module(${arg_TARGET}
         URI ${arg_URI}
-        VERSION ${VERSION}
+        VERSION 1.0#${VERSION}
         SOURCES ${arg_SOURCES}
     )
 
